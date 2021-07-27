@@ -23,17 +23,21 @@
     <template v-slot:item.title="{ item }">
       <td>
         {{
-          item.title ||
-          item.content
-            .filter((record) => record.authorId == authorId)
-            .map((record) => record.title)
-            .join('; ')
+          (item.title ? item.title : '') +
+          (item.content.length > 1 ? ' [Збірник]' : '')
         }}
       </td>
     </template>
 
     <template v-slot:expanded-item="{ headers, item }">
-      <td :colspan="headers.length">{{ item }}</td>
+      <td :colspan="headers.length">
+        {{
+          item.content
+            .filter((record) => record.authorId == authorId)
+            .map((record) => record.title + ', ст. ' + record.pages)
+            .join('; ')
+        }}
+      </td>
     </template>
   </v-data-table>
 </template>
