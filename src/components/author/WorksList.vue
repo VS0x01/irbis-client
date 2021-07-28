@@ -29,6 +29,20 @@
       </td>
     </template>
 
+    <template v-slot:item.data-table-expand="{ item, isExpanded, expand }">
+      <td v-if="item.content.length > 1">
+        <v-icon
+          :class="
+            'v-data-table__expand-icon' +
+            (isExpanded ? ' v-data-table__expand-icon--active' : '')
+          "
+          @click="expand(!isExpanded)"
+        >
+          $expand
+        </v-icon>
+      </td>
+    </template>
+
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">
         {{
