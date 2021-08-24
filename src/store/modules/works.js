@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 // initial state
 const state = () => ({
   works: []
@@ -16,12 +14,14 @@ const getters = {
 const actions = {
   async fetchWork(context, id) {
     context.commit('setWork', {
-      data: await (await axios.get(`/works/${id}`)).data,
+      data: await (await this.$http.get(`/works/${id}`)).data,
       id
     })
   },
   async fetchWorksByAuthor(context, authorId) {
-    let fetchedWorks = await axios.get(`/works/search?authorId=${authorId}`)
+    let fetchedWorks = await this.$http.get(
+      `/works/search?authorId=${authorId}`
+    )
     fetchedWorks.data.forEach((work) => {
       if (work.authorId == -1) work.authorId = authorId
       context.commit('setWork', { data: work })

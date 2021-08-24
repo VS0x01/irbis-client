@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 // initial state
 const state = () => ({
   authors: []
@@ -16,12 +14,12 @@ const getters = {
 const actions = {
   async fetchAuthors(context) {
     context.commit('setAuthors', {
-      data: await (await axios.get('/authors')).data
+      data: await (await this.$http.get('/authors')).data
     })
   },
   async fetchAuthor(context, id) {
     context.commit('setAuthors', {
-      data: await (await axios.get(`/authors/${id}`)).data,
+      data: await (await this.$http.get(`/authors/${id}`)).data,
       id
     })
   }
