@@ -6,24 +6,23 @@ const state = () => ({
 // getters
 const getters = {
   getWorksByAuthor(state) {
-    return (id) => state.works.filter((work) => work.authorId == id)
+    return (id) =>
+      state.works.filter(
+        (work) =>
+          work.authorId == id ||
+          work.anotherAuthors.findIndex(
+            (anotherAuthor) => anotherAuthor.id == id
+          ) !== -1
+      )
   }
 }
 
 // actions
 const actions = {
-  async fetchWork(context, id) {
-    context.commit('setWork', {
-      data: await (await this.$http.get(`/works/${id}`)).data,
-      id
-    })
-  },
-  async fetchWorksByAuthor(context, authorId) {
-    let fetchedWorks = await this.$http.get(
-      `/works/search?authorId=${authorId}`
-    )
+  async fetchWorksByAuthor(context, payload) {
+    let fetchedWorks = await payload.get()
     fetchedWorks.data.forEach((work) => {
-      if (work.authorId == -1) work.authorId = authorId
+      if (work.authorId == -1) work.authorId = payload.authorId
       context.commit('setWork', { data: work })
     })
   }

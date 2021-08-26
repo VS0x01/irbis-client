@@ -49,7 +49,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
   name: 'AuthorsList',
   async created() {
-    await this.fetchAuthors()
+    await this.fetchAuthors(async () => await this.$http.get('/authors'))
     this.loading = false
   },
   mounted() {
@@ -70,12 +70,19 @@ export default {
         { text: 'First name', value: 'firstName' },
         { text: '', value: 'id' }
       ],
-      itemsPerPage: undefined,
       itemsPerPagePrev: undefined
     }
   },
   computed: {
-    ...mapState('authors', ['authors'])
+    ...mapState('authors', ['authors']),
+    itemsPerPage: {
+      get() {
+        return this.$store.state.authors.itemsPerPage
+      },
+      set(v) {
+        this.$store.commit('authors/setItemsPerPage', v)
+      }
+    }
   },
   methods: {
     ...mapActions({ fetchAuthors: 'authors/fetchAuthors' }),

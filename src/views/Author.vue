@@ -22,11 +22,17 @@ export default {
   },
   props: ['id'],
   async created() {
-    await this.fetchAuthor(this.id)
-    await this.fetchWorks(this.id)
+    await this.fetchAuthors(
+      async () => await this.$http.get(`/authors/${this.id}`)
+    )
+    await this.fetchWorks({
+      get: async () =>
+        await this.$http.get(`/works/search?authorId=${this.id}`),
+      authorId: this.id
+    })
     this.loadingAuthorWorks = false
   },
-  data: () => {
+  data() {
     return {
       loadingAuthorWorks: true
     }
@@ -39,7 +45,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchAuthor: 'authors/fetchAuthor',
+      fetchAuthors: 'authors/fetchAuthors',
       fetchWorks: 'works/fetchWorksByAuthor'
     })
   }
