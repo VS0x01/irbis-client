@@ -6,20 +6,6 @@
     show-expand
     single-expand
   >
-    <template v-slot:item.authorName="{ item }">
-      <td>
-        {{
-          item.authorName ||
-          item.anotherAuthors
-            .reduce((accumulator, author) => {
-              return accumulator + ', ' + author.lastName
-            }, '')
-            .slice(2) ||
-          findCurrentWorkInContent(item.content).authorName
-        }}
-      </td>
-    </template>
-
     <template v-slot:item.title="{ item }">
       <td>
         {{
@@ -63,18 +49,9 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'Author(s)', value: 'authorName' },
         { text: 'Title', value: 'title' },
         { text: '', value: 'data-table-expand' }
       ]
-    }
-  },
-  methods: {
-    findCurrentWorkInContent(content) {
-      const currentWork = content.find(
-        (currentRecord) => currentRecord.authorId == this.authorId
-      )
-      return currentWork ?? ''
     }
   }
 }
