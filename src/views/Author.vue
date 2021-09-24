@@ -27,7 +27,7 @@ export default {
     )
     await this.fetchWorks({
       get: async () =>
-        await this.$http.get(`/works/search?authorId=${this.id}`),
+        await this.$http.get(`/works/search?authorId=${this.id}&format=BRIEF`),
       authorId: this.id
     })
     this.loadingAuthorWorks = false
