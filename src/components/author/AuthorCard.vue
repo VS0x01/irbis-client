@@ -25,64 +25,78 @@
     <v-card-title v-if="author">
       {{ author.lastName + ' ' + author.firstName }}
     </v-card-title>
-    <v-simple-table v-if="author">
-      <template v-slot:default>
-        <tbody>
-          <tr>
-            <td><v-card-title>Вчене звання:</v-card-title></td>
-            <td>
-              <v-card-text>{{ author.academicStatus }}</v-card-text>
-            </td>
-          </tr>
-          <tr>
-            <td><v-card-title>Науковий ступінь:</v-card-title></td>
-            <td>
-              <v-card-text>{{ author.degree }}</v-card-text>
-            </td>
-          </tr>
-          <tr>
-            <td><v-card-title>Місце роботи:</v-card-title></td>
-            <td>
-              <v-card-text>{{ author.workPlace }}</v-card-text>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-card-title>
-                Сторінка науковця на сайті університету:
-              </v-card-title>
-            </td>
-            <td>
-              <v-card-text>{{ author.academicStatus }}</v-card-text>
-            </td>
-          </tr>
-          <tr v-if="Object.keys(author.links).length > 0">
-            <td><v-card-title> Посилання: </v-card-title></td>
-            <td>
-              <v-card-text>
-                <v-chip-group>
-                  <v-chip
-                    link
-                    v-for="(v, k) in author.links"
-                    :key="k"
-                    :href="v"
-                  >
-                    {{ k }}
-                  </v-chip>
-                </v-chip-group>
-              </v-card-text>
-            </td>
-          </tr>
-        </tbody>
+    <v-data-table
+      v-if="author"
+      :headers="headers"
+      :items="[
+        {
+          k: 'Вчене звання:',
+          v: author.academicStatus,
+          show: true
+        },
+        {
+          k: 'Науковий ступінь:',
+          v: author.degree,
+          show: true
+        },
+        {
+          k: 'Місце роботи:',
+          v: author.workPlace,
+          show: true
+        },
+        {
+          k: 'Сторінка науковця на сайті університету:',
+          v: [{ KNEU: this.author.links.KNEU }],
+          show: Object.keys(author.links).includes('KNEU'),
+          type: 'Link'
+        },
+        {
+          k: 'Посилання:',
+          v: this.author.links,
+          show: Object.keys(author.links).length > 0,
+          type: 'List<Link>'
+        }
+      ]"
+      hide-default-header
+      hide-default-footer
+    >
+      <template v-slot:item="{ item }">
+        <tr v-if="item.show">
+          <td>
+            <v-card-title>{{ item.k }}</v-card-title>
+          </td>
+          <td>
+            <v-card-text
+              v-if="item.type !== 'Link' && item.type !== 'List<Link>'"
+            >
+              {{ item.v }}
+            </v-card-text>
+            <v-card-text v-else>
+              <v-chip-group column>
+                <v-chip link v-for="(to, k) in item.v" :href="to" :key="k">
+                  {{ k }}
+                </v-chip>
+              </v-chip-group>
+            </v-card-text>
+          </td>
+        </tr>
       </template>
-    </v-simple-table>
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
 export default {
   name: 'AuthorCard',
-  props: ['author']
+  props: ['author'],
+  data() {
+    return {
+      headers: [
+        { text: '', value: 'k' },
+        { text: '', value: 'v' }
+      ]
+    }
+  }
 }
 </script>
 
