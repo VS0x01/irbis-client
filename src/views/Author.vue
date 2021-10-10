@@ -35,7 +35,6 @@ export default {
         )
         let result = []
         await Promise.all([works, workDescriptions]).then((values) => {
-          console.log(values)
           for (let i = 0; i < values[0].data.length; ++i) {
             result[i] = {}
             Object.assign(result[i], values[0].data[i], {
@@ -43,7 +42,6 @@ export default {
             })
           }
         })
-        console.log(result)
         return result
       },
       authorId: this.id
