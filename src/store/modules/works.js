@@ -21,7 +21,7 @@ const getters = {
 const actions = {
   async fetchWorksByAuthor(context, payload) {
     let fetchedWorks = await payload.get()
-    fetchedWorks.data.forEach((work) => {
+    fetchedWorks.forEach((work) => {
       if (work.authorId == -1) work.authorId = payload.authorId
       context.commit('setWork', { data: work })
     })

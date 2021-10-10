@@ -24,7 +24,7 @@
         </v-chip-group>
       </template>
 
-      <template v-slot:group.header="props">
+      <template v-slot:[`group.header`]="props">
         <td :colspan="props.headers.length">
           <v-btn class="ma-0" icon small @click="props.toggle">
             <v-icon>{{ props.isOpen ? '$minus' : '$plus' }}</v-icon>
@@ -36,7 +36,7 @@
         </td>
       </template>
 
-      <template v-slot:item.id="{ item }">
+      <template v-slot:[`item.id`]="{ item }">
         <v-chip :to="'/authors/' + item.id">View</v-chip>
       </template>
     </v-data-table>

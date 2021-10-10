@@ -26,8 +26,26 @@ export default {
       async () => await this.$http.get(`/authors/${this.id}`)
     )
     await this.fetchWorks({
-      get: async () =>
-        await this.$http.get(`/works/search?authorId=${this.id}&format=BRIEF`),
+      get: async () => {
+        let works = this.$http.get(
+          `/works/search?authorId=${this.id}&format=ALL`
+        )
+        let workDescriptions = this.$http.get(
+          `/works/search?authorId=${this.id}&format=BRIEF`
+        )
+        let result = []
+        await Promise.all([works, workDescriptions]).then((values) => {
+          console.log(values)
+          for (let i = 0; i < values[0].data.length; ++i) {
+            result[i] = {}
+            Object.assign(result[i], values[0].data[i], {
+              description: values[1].data[i].description
+            })
+          }
+        })
+        console.log(result)
+        return result
+      },
       authorId: this.id
     })
     this.loadingAuthorWorks = false
