@@ -3,6 +3,7 @@
     :headers="headers"
     :items="works"
     :loading="loading"
+    sort-by="description"
     group-by="year"
     group-desc
   >
