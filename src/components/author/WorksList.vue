@@ -4,6 +4,7 @@
     :items="works"
     :loading="loading"
     group-by="year"
+    group-desc
   >
     <template v-slot:[`group.header`]="props">
       <td :colspan="props.headers.length">
