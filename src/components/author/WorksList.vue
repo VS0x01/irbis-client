@@ -15,6 +15,14 @@
         {{ props.group !== -1 ? props.group : '' }}
       </td>
     </template>
+
+    <template v-slot:[`item.links`]="{ item }">
+      <td>
+        <v-chip v-for="link in item.links" :key="link" :href="link">
+          Link
+        </v-chip>
+      </td>
+    </template>
   </v-data-table>
 </template>
 
@@ -24,7 +32,10 @@ export default {
   props: ['authorId', 'works', 'loading'],
   data() {
     return {
-      headers: [{ text: 'Title', value: 'description' }]
+      headers: [
+        { text: 'Title', value: 'description' },
+        { text: 'Link(s)', value: 'links' }
+      ]
     }
   }
 }
