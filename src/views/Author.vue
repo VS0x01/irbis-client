@@ -22,11 +22,33 @@ export default {
   },
   props: ['id'],
   async created() {
-    await this.fetchAuthor(this.id)
-    await this.fetchWorks(this.id)
+    await this.fetchAuthors(
+      async () => await this.$http.get(`/authors/${this.id}`)
+    )
+    await this.fetchWorks({
+      get: async () => {
+        let works = this.$http.get(
+          `/works/search?authorId=${this.id}&format=ALL`
+        )
+        let workDescriptions = this.$http.get(
+          `/works/search?authorId=${this.id}&format=BRIEF`
+        )
+        let result = []
+        await Promise.all([works, workDescriptions]).then((values) => {
+          for (let i = 0; i < values[0].data.length; ++i) {
+            result[i] = {}
+            Object.assign(result[i], values[0].data[i], {
+              description: values[1].data[i].description
+            })
+          }
+        })
+        return result
+      },
+      authorId: this.id
+    })
     this.loadingAuthorWorks = false
   },
-  data: () => {
+  data() {
     return {
       loadingAuthorWorks: true
     }
@@ -39,7 +61,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchAuthor: 'authors/fetchAuthor',
+      fetchAuthors: 'authors/fetchAuthors',
       fetchWorks: 'works/fetchWorksByAuthor'
     })
   }

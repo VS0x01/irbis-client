@@ -3,54 +3,14 @@
     :headers="headers"
     :items="works"
     :loading="loading"
-    show-expand
-    single-expand
+    group-by="year"
   >
-    <template v-slot:item.authorName="{ item }">
-      <td>
-        {{
-          item.authorName ||
-          item.anotherAuthors
-            .reduce((accumulator, author) => {
-              return accumulator + ', ' + author.lastName
-            }, '')
-            .slice(2) ||
-          findCurrentWorkInContent(item.content).authorName
-        }}
-      </td>
-    </template>
-
-    <template v-slot:item.title="{ item }">
-      <td>
-        {{
-          (item.title ? item.title : '') +
-          (item.content.length > 1 ? ' [Збірник]' : '')
-        }}
-      </td>
-    </template>
-
-    <template v-slot:item.data-table-expand="{ item, isExpanded, expand }">
-      <td v-if="item.content.length > 1">
-        <v-icon
-          :class="
-            'v-data-table__expand-icon' +
-            (isExpanded ? ' v-data-table__expand-icon--active' : '')
-          "
-          @click="expand(!isExpanded)"
-        >
-          $expand
-        </v-icon>
-      </td>
-    </template>
-
-    <template v-slot:expanded-item="{ headers, item }">
-      <td :colspan="headers.length">
-        {{
-          item.content
-            .filter((record) => record.authorId == authorId)
-            .map((record) => record.title + ', ст. ' + record.pages)
-            .join('; ')
-        }}
+    <template v-slot:[`group.header`]="props">
+      <td :colspan="props.headers.length">
+        <v-btn class="ma-0" icon small @click="props.toggle">
+          <v-icon>{{ props.isOpen ? '$minus' : '$plus' }}</v-icon>
+        </v-btn>
+        {{ props.group !== -1 ? props.group : '' }}
       </td>
     </template>
   </v-data-table>
@@ -62,19 +22,7 @@ export default {
   props: ['authorId', 'works', 'loading'],
   data() {
     return {
-      headers: [
-        { text: 'Author(s)', value: 'authorName' },
-        { text: 'Title', value: 'title' },
-        { text: '', value: 'data-table-expand' }
-      ]
-    }
-  },
-  methods: {
-    findCurrentWorkInContent(content) {
-      const currentWork = content.find(
-        (currentRecord) => currentRecord.authorId == this.authorId
-      )
-      return currentWork ?? ''
+      headers: [{ text: 'Title', value: 'description' }]
     }
   }
 }
